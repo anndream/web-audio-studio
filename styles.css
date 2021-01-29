@@ -1,0 +1,244 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: url('./img/equipohome.jpeg') rgba(0, 0, 0, 0.692) ;
+  background-blend-mode: overlay;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: 0 60%;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(11, 17, 16, 0.945);
+  color: aliceblue;
+  padding: 10px 30px 10px 30px;
+  /* margin-bottom: 40px; */
+}
+
+.home-title {
+  display: flex;
+  width: auto;
+  padding: 4px 20px 4px 10px;
+}
+
+.icon {
+  height: 40px;
+  width: 40px;
+  background-color: rgb(187, 94, 94);
+  align-self: center;
+  margin-right: 40px;
+}
+
+nav {
+  align-self: center;
+}
+
+.info{
+  padding:20px;
+  text-align: center;
+  color: aliceblue;
+}
+
+.main-container{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.editor-bar{
+
+  
+}
+
+.side-bar{
+  flex:1;
+  background-color: darkslategrey;
+  border-color: rgb(0, 0, 0);
+  border-style: solid;
+  border-width: 2px;
+  padding: 8px;
+}
+
+.main-panel{
+  flex:2;
+}
+
+.track-container {
+  background-color: rgb(17, 36, 33);
+  border-color: rgb(0, 0, 0);
+  border-width: 2px;
+  padding: 10px;
+  /* margin: 10px; */
+  display: flex;
+  align-items: center;
+  height: 200px;
+}
+
+.controls-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 200px;
+  width: 100px;
+  border-color: rgb(14, 13, 13);
+  border-width: 2px;
+  border-style: solid;
+  box-shadow: 0px 0px 4px 2px rgba(136, 136, 136, 0.096);
+  padding: 4px;
+  background-color: rgb(0, 0, 0);
+  color: aliceblue;
+  text-align: center;
+  font-size: smaller;
+}
+
+.wave-box {
+  margin-left: 6px;
+  height: 96%;
+  width: 100%;
+  border-color: rgb(12, 17, 17);
+  border-width: 2px;
+  border-style: solid;
+  box-shadow: 0px 0px 2px 4px rgba(136, 136, 136, 0.096);
+  padding: 10px;
+  background-color: rgb(0, 0, 0);
+}
+
+/* controls */
+.track-name {
+  align-self: center;
+  color: antiquewhite;
+  margin: 2px;
+}
+
+.vu {
+  align-self: flex-start;
+  position: relative;
+  /* right: 50%; */
+  top: -5%;
+  height: 130px;
+  width: 50%;
+  border-color: rgb(17, 27, 27);
+  border-width: 1px;
+  border-style: solid;
+}
+
+.slider {
+  transform: rotate(90deg) scale(0.75, 0.6);
+  position: relative;
+  left: 45%;
+  top: 25%;
+  align-self: flex-end;
+  background: crimson;
+  cursor: pointer;
+}
+
+.pan {
+  transform: scale(0.65, 0.6);
+  align-self: center;
+  cursor: pointer;
+}
+
+.vu-box-mock {
+  display: flex;
+  flex-direction: row;
+}
+.vu-meter {
+  align-self: flex-start;
+  position: relative;
+  right: -20%;
+  top: -12%;
+  height: 96px;
+  width: 14px;
+  background-color: rgb(0, 189, 25);
+  border-color: rgb(0, 0, 0);
+  border-width: 2px;
+  border-style: solid;
+  /* position: relative;
+  left: -40px; */
+}
+
+
+.mute-solo-btns {
+  align-self: center;
+  margin: 8px 0 4px 0;
+}
+.mute-solo-btns > :hover {
+  background-color: rgba(219, 0, 0, 0.753);
+  color: aliceblue;
+  border-color:  rgba(241, 0, 0, 0.678);
+}
+
+.msr-btn{
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn {
+  border-radius: 4px;
+  padding: 6px 3px 6px 3px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* wave */
+img {
+  height: 95%;
+  width: 100%;
+}
+
+.center {
+  align-self: center;
+}
+
+.master {
+  background-color: rgb(17, 36, 33);
+  border-color: rgb(0, 0, 0);
+  border-width: 4px;
+  border-style: solid;
+  padding: 16px;
+  margin: 20px 40% 20px 40%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.master-btns {
+  margin: 20px 0 20px 0;
+}
+
+footer {
+  left: 0;
+  bottom: 0;
+  margin-top: 60px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.849);
+  color: aliceblue;
+  text-align: center;
+}
+
+.download-btn{
+  background-color: rgb(228, 190, 135);
+  border-color: rgb(248, 202, 132);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color:  rgb(20, 20, 20);
+  color: aliceblue;
+}
+
+td, th {
+  border: 1px solid #0e0e0e00;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #53535367;
+}

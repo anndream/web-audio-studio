@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Audio Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div class="home-title">
+            <div class="icon">Icon</div>
+            <h2>Web Audio Editor</h2> 
+        </div>   
+        <nav>
+            <button class="sign-in btn">Sign In</button>
+            <button class="sign-up btn">Sign Up</button>
+        </nav>
+    </header>
+    <div class="info">
+        <h1>Choose the track for your comercial</h1>
+        <h1> Record your narrative</h1>
+        <h1> Edit, mix and download your custom track!</h1>
+    </div>
+    <div class="main-container">
+        <div class="editor-bar"></div>
+        <div class="side-bar">
+            <table>
+                <th>Track</th>
+                <th>Duration</th>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+              <tr>
+                <td>Track</td>
+                <td>30s</td>
+              </tr>
+            </table>
+        </div>
+        <div class="main-panel">
+            <div class="track-container">
+                <div class="controls-box">
+                    <h4 class="track-name" id="track-id-1">Track 1</h4>
+                    <input class="slider" type="range" id="volume-1" >
+                    <div class="vu" id="my-peak-meter" ></div>
+                    <input class="pan" type="range" id="pan-1">
+                    <div class="mute-solo-btns">
+                        <button type="button" class="msr-btn">M</button>
+                        <button type="button" class="msr-btn">S</button>
+                        <button type="button" class="msr-btn"><i class="fa fa-circle"></i></button>
+                    </div>
+                </div>
+                <div class="wave-box">
+                    <img alt="test" src="./img/audio-wave.jpg">            
+                </div>
+            </div>
+    
+                
+            <div class="track-container">
+                <div class="controls-box">
+                    <h4 class="track-name" id="track-id-2">Track 2</h4>
+                    <input class="slider" type="range" id="volume-2" >
+                    <div class="vu-box-mock">
+                        <div class="vu-meter" id="my-peak-meter" ></div>
+                        <div class="vu-meter" id="my-peak-meter" ></div>
+                    </div>
+                    <input class="pan" type="range" id="pan-1">
+                    <div class="mute-solo-btns">
+                        <button type="button" class="msr-btn">M</button>
+                        <button type="button" class="msr-btn">S</button>
+                        <button type="button" class="msr-btn"><i class="fa fa-circle"></i></button>
+                    </div>
+                </div>
+                <div class="wave-box">
+                    <img alt="test" src="./img/audio-wave.jpg">            
+                </div>
+            </div>
+                
+            <!-- <audio  id="my-audio" preload="metadata" >
+                <source src="./samples/Jaded.mp3" type="audio/mpeg">
+            </audio>     -->
+
+        </div>
+       
+    </div>
+
+    <div class="master">
+        <div class="controls-box">
+            <h4 class="track-name" id="track-id-1">Master</h4>
+            <input class="slider" type="range" id="master-vol" >
+            <div class="vu" id="my-peak-meter" ></div>
+            <input class="pan" type="range" id="master-pan">            
+        </div>
+        <div class="master-btns">
+            <button id="play-pause" type="button" class="btn btn-secondary" onclick="playAudio()"><i class=""></i></button>
+            <button id="stop" type="button" class="btn btn-secondary" onclick="stopAudio()"><i class="fa fa-stop"></i></button>
+            <button id="rec" type="button" class="btn btn-secondary" onclick="recordAudio()"><i class="fa fa-circle"></i></button>
+        </div>
+        <button type="button" class="download-btn btn center">Download</button>
+    </div>
+
+    <footer><p>By Diogo Tavares</p></footer>
+
+    <script src="https://esonderegger.github.io/web-audio-peak-meter/web-audio-peak-meter-2.0.0.min.js"></script>
+    <script src="./index.js"></script>
+    <script src="./audioProcessing.js"></script>
+</body>
+</html>
+
+
+
