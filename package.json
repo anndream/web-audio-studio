@@ -29,8 +29,10 @@
     "html-loader": "^0.4.5",
     "mongoose": "^4.11.3",
     "peaks.js": "^0.23.1",
+    "waveform-data": "^3.3.4",
     "waves-loaders": "github:ircam-rnd/loaders",
     "waves-ui": "github:wavesjs/ui",
+    "wavesurfer.js": "^4.4.0",
     "web-audio-peak-meter": "^2.0.1",
     "webpack": "^3.1.0",
     "webpack-dev-server": "^2.5.1"

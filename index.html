@@ -7,8 +7,6 @@
     <link rel="icon" href="./img/favicon.ico"/>
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://esonderegger.github.io/web-audio-peak-meter/web-audio-peak-meter-2.0.0.min.js"></script>
-    <script src="./index.js"></script>
 </head>
 <body>
     <header>
@@ -17,8 +15,8 @@
             <h2>Web Audio Editor</h2> 
         </div>   
         <nav>
-            <button class="sign">Sign In</button>
-            <button class="sign">Sign Up</button>
+            <button class="sign btn">Sign In</button>
+            <button class="sign btn">Sign Up</button>
         </nav>
     </header>
     <div class="info">
@@ -29,7 +27,7 @@
     <div class="main-container">
         <div class="side-bar">
             <div class="tracks-menu">
-                <div class="tracks-bar">Choose the Track</div>
+                <div class="tracks-bar">Tracks List</div>
 
                 <div class="dropdown">
                     <button class="dropbtn">Styles</button>
@@ -42,55 +40,30 @@
                         <a>All styles</a>
                     </div>
                 </div>
-
             </div>
-            <div class="space-between">
+            <div class="space-between" >
                 <table>
-                    <tr>
-                        <th>Track</th>
-                        <th>Style</th>
-                        <th>Duration</th>
-                    </tr>
-                    <tr>
+                    <thead>
+                        <tr>
+                            <th>Track</th>
+                            <th>Style</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tracks-list">
+
+                    </tbody>
+                    <!-- <tr>
                         <td>Track song music</td>
                         <td>Corporate</td>
                         <td>30s</td>
-                    </tr>
-                    <tr>
-                        <td>Track song music</td>
-                        <td>Corporate</td>
-                        <td>30s</td>
-                    </tr>
-                    <tr>
-                        <td>Track song music</td>
-                        <td>Corporate</td>
-                        <td>30s</td>
-                    </tr>
-                    <tr>
-                        <td>Track song music</td>
-                        <td>Corporate</td>
-                        <td>30s</td>
-                    </tr>
-                    <tr>
-                        <td>Track song music</td>
-                        <td>Corporate</td>
-                        <td>30s</td>
-                    </tr>
-                    <tr>
-                        <td>Track song music</td>
-                        <td>Corporate</td>
-                        <td>30s</td>
-                    </tr>
-                    <tr>
-                        <td>Track song music</td>
-                        <td>Corporate</td>
-                        <td>30s</td>
-                    </tr>
+                    </tr> -->
                 </table>
+                <input type="file" id="files" name="Upload Track" multiple onchange="getFiles()">
                 <div class="master-btns">
-                    <button id="play-pause" type="button" class="btn btn-secondary" onclick="playAudio()"><i class="fa fa-play"></i></button>
-                    <button id="stop" type="button" class="btn btn-secondary" onclick="stopAudio()"><i class="fa fa-stop"></i></button>
-                    <button id="rec" type="button" class="btn btn-secondary" onclick="recordAudio()"><i class="fa fa-circle"></i></button>
+                    <button id="play-pause" type="button" class="master-btn btn" onclick="playAudio()"><i id="play-pause-i" class="fa fa-play"></i></button>
+                    <button id="stop" type="button" class="master-btn btn" onclick="stopAudio()"><i class="fa fa-stop"></i></button>
+                    <button id="rec" type="button" class="master-btn btn" onclick="recordAudio()"><i class="fa fa-circle"></i></button>
                 </div>
             </div>
         </div>
@@ -98,14 +71,15 @@
             <div class="editor-bar">Edit Panel</div>
             <div class="track-container">
                
-                <div class="wave-box">
-                    <img class="wave-img" alt="test" src="./img/audio-wave.jpg">            
-                </div>
+                <div class="wave-box" id="wave-1"></div>
                 <div class="controls-box">
                     <h4 class="track-name" id="track-id-1">Track 1</h4>
-                    <input class="slider" id="volume-1" type="range" min="0" max="100" >
-                    <div class="vu" id="my-peak-meter" ></div>
-                    <input class="pan" id="pan-1" type="range" min="-50" max="50" step="1">
+
+                    <input class="volume" id="volume-1" type="range" value="100" min="0" max="100" oninput="setVolume()">
+
+                    <div class="vu" id="peak-meter-1" ></div>
+
+                    <input class="pan" id="pan-1" type="range" min="-100" max="100"   oninput="setPan()">
 
                     <datalist>
                         <option value="-50" label="L"></option>
@@ -114,43 +88,17 @@
                     </datalist>
 
                     <div class="mute-solo-btns">
-                        <button type="button" class="msr-btn">M</button>
-                        <button type="button" class="msr-btn">S</button>
-                        <button type="button" class="msr-btn"><i class="fa fa-circle"></i></button>
+                        <button type="button" class="msr-btn btn">M</button>
+                        <button type="button" class="msr-btn btn">S</button>
+                        <button type="button" class="msr-btn btn"><i class="fa fa-circle "></i></button>
                     </div>
                 </div>
             </div>
+            <audio  id="audio-1" preload="metadata"></audio>    
     
-                
-            <div class="track-container">
-
-                <div class="wave-box">
-                    <img class="wave-img" alt="test" src="./img/audio-wave.jpg">            
-                </div>
-                <div class="controls-box">
-                    <h4 class="track-name" id="track-id-2">Track 2</h4>
-                    <input class="slider" type="range" id="volume-2" >
-                    <div class="vu-box-mock">
-                        <div class="vu-meter" id="my-peak-meter" ></div>
-                        <div class="vu-meter" id="my-peak-meter" ></div>
-                    </div>
-                    <input class="pan" type="range" id="pan-1">
-                    <div class="mute-solo-btns">
-                        <button type="button" class="msr-btn">M</button>
-                        <button type="button" class="msr-btn">S</button>
-                        <button type="button" class="msr-btn"><i class="fa fa-circle"></i></button>
-                    </div>
-                </div>
-            </div>
-
-                
-            <!-- <audio  id="my-audio" preload="metadata" >
-                <source src="./samples/Jaded.mp3" type="audio/mpeg">
-            </audio>     -->
-
         </div>
-       
     </div>
+
 <!-- 
     <div class="master-container">
         <div class="controls-box">
@@ -170,11 +118,33 @@
 
     <footer><p>By Diogo Tavares</p></footer>
 
+    <script src="./libs/web-peak-meter.min.js"></script>
+
+    <!-- <script src="./libs/wavesurfer.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js"></script> -->
+    <script src="./node_modules/wavesurfer.js/dist/wavesurfer.js"></script>
+
     <script src="./audioProcessing.js"></script>
-    <script>
-    </script>
-</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body> 
 </html>
+
 
 
 

@@ -1,155 +1,146 @@
-var webAudioPeakMeter = require('web-audio-peak-meter');
 
-var myMeterElement = document.getElementById('my-peak-meter');
-var myAudio = document.getElementById('my-audio');
-var audioCtx = new window.AudioContext();
-var sourceNode = audioCtx.createMediaElementSource(myAudio);
-sourceNode.connect(audioCtx.destination);
-var meterNode = webAudioPeakMeter.createMeterNode(sourceNode, audioCtx);
+var playing = false;
+var audioElementsId = 'audio-1'
+var peakMetersId = 'peak-meter-1'
+var audioSource = './samples/theHunt.mp3'
 
-webAudioPeakMeter.createMeter(myMeterElement, meterNode, {});
+document.getElementById(audioElementsId
+    ).setAttribute('src',audioSource);
+document.getElementById(audioElementsId
+    ).setAttribute('type','audio/mpeg');
 
-myAudio.addEventListener('play', function() {
-    audioCtx.resume();
+var mainObjects = {audiosource:audioSource,
+                   audioList:''}
+
+                   
+// var wavesurfer = Object.create(WaveSurfer);
+// wavesurfer.init({
+//     container: document.querySelector('#wave-1'),
+//     waveColor: 'rgb(96, 170, 130)',
+//     progressColor: 'grey',
+//     cursorColor:'white',
+//     hideScrollbar: true,
+//     backend: 'MediaElement'
+// });
+
+var wavesurfer = WaveSurfer.create({
+    container: document.querySelector('#wave-1'),
+    waveColor: 'rgb(96, 170, 130)',
+    progressColor: 'grey',
+    cursorColor:'white',
+    hideScrollbar: true,
+    splitChannels:true,
+    maxCanvasWidth: 200,
+    height:100,
+    backend: 'MediaElement'
 });
 
 
-// var audioContext = null;
-// var meter = null;
-// var canvasContext = null;
-// var WIDTH=500;
-// var HEIGHT=50;
-// var rafID = null;
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// window.onload = function() {
-
-//     // grab our canvas
-// 	canvasContext = document.getElementById( "meter" ).getContext("2d");
-	
-//     // monkeypatch Web Audio
-//     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-	
-//     // grab an audio context
-//     audioContext = new AudioContext();
-
-//     // Attempt to get audio input
-//     try {
-//         // monkeypatch getUserMedia
-//         navigator.getUserMedia = 
-//         	navigator.getUserMedia ||
-//         	navigator.webkitGetUserMedia ||
-//         	navigator.mozGetUserMedia;
-
-//         // ask for an audio input
-//         navigator.getUserMedia(
-//         {
-//             "audio": {
-//                 "mandatory": {
-//                     "googEchoCancellation": "false",
-//                     "googAutoGainControl": "false",
-//                     "googNoiseSuppression": "false",
-//                     "googHighpassFilter": "false"
-//                 },
-//                 "optional": []
-//             },
-//         }, gotStream, didntGetStream);
-//     } catch (e) {
-//         alert('getUserMedia threw exception :' + e);
-//     }
-
-// }
+wavesurfer.load(document.getElementById(audioElementsId));
+wavesurfer.zoom(Number(0));
 
 
-// function didntGetStream() {
-//     alert('Stream generation failed.');
-// }
+// functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function init(meterId, audioId, options, ctx) {
+    var meterElement = document.getElementById(meterId);
+    var audioElement = document.getElementById(audioId);
 
-// var mediaStreamSource = null;
+    var sourceNode = ctx.createMediaElementSource(audioElement);
+    sourceNode.connect(ctx.destination);
+    var meterNode = webAudioPeakMeter.createMeterNode(sourceNode, ctx);
+    webAudioPeakMeter.createMeter(meterElement, meterNode, options);
 
-// function gotStream(stream) {
-//     // Create an AudioNode from the stream.
-//     mediaStreamSource = audioContext.createMediaStreamSource(stream);
+    // audioElement.addEventListener('play', function () {
+    //     ctx.resume();
+    // });
+}
 
-//     // Create a new volume meter and connect it.
-//     meter = createAudioMeter(audioContext);
-//     mediaStreamSource.connect(meter);
+function playAudio() {
+    var myAudio = document.getElementById(audioElementsId);
 
-//     // kick off the visual updating
-//     drawLoop();
-// }
+    if(!playing){
+        audioCtx.resume(); 
+        // myAudio.play();
+        playing = true;
+        document.getElementById('play-pause-i').className= "fa fa-pause";
+    }
+    else{
+        // myAudio.pause();
+        playing = false;
+        document.getElementById('play-pause-i').className="fa fa-play";
+    } 
+    wavesurfer.playPause();
+}
 
-// function drawLoop( time ) {
-//     // clear the background
-//     canvasContext.clearRect(0,0,WIDTH,HEIGHT);
+function stopAudio() {
+    // audioCtx.resume(); 
+    var myAudio = document.getElementById(audioElementsId);
+    // myAudio.pause();
+    // myAudio.currentTime = 0;
+    playing = false;
+    document.getElementById('play-pause-i').className="fa fa-play";
+    wavesurfer.stop();
+} 
 
-//     // check if we're currently clipping
-//     if (meter.checkClipping())
-//         canvasContext.fillStyle = "red";
-//     else
-//         canvasContext.fillStyle = "green";
+function setVolume(){
+    var value = document.getElementById('volume-1').value;
+    value = value/100;
+    wavesurfer.setVolume(value);
+    // console.log(value)
+}
 
-//     // draw a bar based on the current volume
-//     canvasContext.fillRect(0, 0, meter.volume*WIDTH*1.4, HEIGHT);
-
-//     // set up the next visual callback
-//     rafID = window.requestAnimationFrame( drawLoop );
-// }
+function setPan(){
+    var value = document.getElementById('pan-1').value;
+}
 
 
 
-// function createAudioMeter(audioContext,clipLevel,averaging,clipLag) {
-// 	var processor = audioContext.createScriptProcessor(512);
-// 	processor.onaudioprocess = volumeAudioProcess;
-// 	processor.clipping = false;
-// 	processor.lastClip = 0;
-// 	processor.volume = 0;
-// 	processor.clipLevel = clipLevel || 0.98;
-// 	processor.averaging = averaging || 0.95;
-// 	processor.clipLag = clipLag || 750;
+/// Data functions
 
-// 	// this will have no effect, since we don't copy the input to the output,
-// 	// but works around a current Chrome bug.
-// 	processor.connect(audioContext.destination);
+function getFiles(){
+    var inp = document.getElementById("files");
+    var files = []
 
-// 	processor.checkClipping =
-// 		function(){
-// 			if (!this.clipping)
-// 				return false;
-// 			if ((this.lastClip + this.clipLag) < window.performance.now())
-// 				this.clipping = false;
-// 			return this.clipping;
-// 		};
+    for (i = 0; i < inp.files.length; i++) {
+        files[i] = inp.files[i];
+        console.log(files[i])
+    }
 
-// 	processor.shutdown =
-// 		function(){
-// 			this.disconnect();
-// 			this.onaudioprocess = null;
-// 		};
+    createTabe(inp.files);
+}
 
-// 	return processor;
-// }
 
-// function volumeAudioProcess( event ) {
-// 	var buf = event.inputBuffer.getChannelData(0);
-//     var bufLength = buf.length;
-// 	var sum = 0;
-//     var x;
+function createTabe(data){
+    var table = document.getElementById("tracks-list");
+    
+    while (table.lastElementChild) {
+        table.removeChild(table.lastElementChild);
+    }
 
-// 	// Do a root-mean-square on the samples: sum up the squares...
-//     for (var i=0; i<bufLength; i++) {
-//     	x = buf[i];
-//     	if (Math.abs(x)>=this.clipLevel) {
-//     		this.clipping = true;
-//     		this.lastClip = window.performance.now();
-//     	}
-//     	sum += x * x;
-//     }
+    for (i = 0; i < data.length; i++) {
+        var row = document.createElement("tr");
+    
+        for (var j = 0; j < 3; j++) { // columns
+          var cell = document.createElement("td");
+          if(j==0){
+            var cellText = document.createTextNode(data[i].name);
+          }else if(j==1){
+            var cellText = document.createTextNode("Music");
+          }else{
+            var cellText = document.createTextNode(data[i].size);
+          }
 
-//     // ... then take the square root of the sum.
-//     var rms =  Math.sqrt(sum / bufLength);
+          cell.appendChild(cellText);
+          row.appendChild(cell);
+        }
+        table.appendChild(row)
+    }
+}
 
-//     // Now smooth this out with the averaging factor applied
-//     // to the previous sample - take the max here because we
-//     // want "fast attack, slow release."
-//     this.volume = Math.max(rms, this.volume*this.averaging);
-// }
+
+// Initialize
+init(peakMetersId, audioElementsId
+, { audioMeterStandard: 'true-peak' }, audioCtx);
+

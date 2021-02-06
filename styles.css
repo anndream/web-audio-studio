@@ -7,16 +7,19 @@ body {
   background-blend-mode: overlay;
   background-attachment: fixed;
   background-size: cover;
-  background-position: 0 80%;
+  background-position: 0 70%;
 }
 
 header {
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 15, 13, 0.726);
+  background-color:  rgba(17, 36, 33, 0.836);
   color: aliceblue;
   padding: 8px 26px 8px 26px;
   /* margin-bottom: 40px; */
+
+  /* background-color: rgba(0, 15, 13, 0.726);
+  color: aliceblue; */
 }
 
 .home-title {
@@ -36,11 +39,12 @@ header {
 .sign{
   margin: 4px;
   background-color: #802121f1;
-  border-color:#722020f1;
-  padding: 10px 14px;
+  /* padding: 14px; */
+  height: 36px;
+  width: 80px;
   color: aliceblue;
-  border-radius: 6px;
 }
+
 nav {
   align-self: center;
 }
@@ -49,6 +53,9 @@ nav {
   padding:60px;
   text-align: center;
   color: aliceblue;
+}
+.info > h1{
+  margin: 7%;  
 }
 
 
@@ -94,6 +101,7 @@ nav {
   border: none;
   cursor: pointer;
   width: 100%;
+  outline: none; 
 }
 
 .dropdown-content {
@@ -128,7 +136,8 @@ nav {
 }
 
 .main-panel{
-  flex:2.5;
+  flex:2.7;
+  /* overflow-y: scroll; */
 }
 .editor-bar{
   background-color: rgba(0, 0, 0, 0.932);
@@ -140,9 +149,9 @@ nav {
 
 .track-container {
   background-color: rgba(17, 36, 33, 0.952);
-  border-color: rgb(0, 0, 0);
-  border-width: 2px;
-  padding: 12px;
+  /* border-color: rgb(0, 0, 0);
+  border-width: 2px; */
+  padding: 8px;
   /* margin: 10px; */
   display: flex;
   /* align-items: center; */
@@ -151,14 +160,15 @@ nav {
 }
 
 .wave-box {
-  margin-right: 16px;
-  height: auto;
+  margin-right: 10px;
+  /* height: auto; */
+  /* height: 200px; */
   width: 90%;
   border-color: rgb(12, 17, 17);
   border-width: 2px;
   border-style: solid;
   box-shadow: 0px 0px 4px 2px rgba(136, 136, 136, 0.096);
-  padding: 10px;
+  /* padding: 38px 8px 0 8px; */
   background-color: rgb(0, 0, 0);
 }
 
@@ -194,30 +204,57 @@ nav {
 }
 
 .vu {
-  align-self: flex-start;
+  /* align-self: flex-start; */
   position: relative;
-  /* right: 50%; */
-  top: -5%;
-  height: 130px;
-  width: 50%;
-  border-color: rgb(17, 27, 27);
+  right: 6px;
+  /* top: -4px; */
+  height: 100%;
+  width:60px;
+  /* border-color: rgb(17, 27, 27);
   border-width: 1px;
-  border-style: solid;
+  border-style: solid; */
 }
 
-.slider {
-  transform: rotate(90deg) scale(0.75, 0.6);
+.volume {
+  -webkit-appearance: none;
+  transform: rotate(-90deg) scale(0.75, 0.6);
   position: relative;
   left: 55%;
-  top: 25%;
+  top:33%;
+  outline: none; 
   align-self: flex-end;
-  background: crimson;
+}
+
+
+.volume::-webkit-slider-thumb {
+  transform: rotate(90deg);
+  -webkit-appearance:none;
+  appearance: none;;
+  margin: 0;;
+  width:24px;
+  height: 6px;
+  background:  rgb(96, 170, 130);
   cursor: pointer;
 }
 
+
 .pan {
-  transform: scale(0.65, 0.6);
+  -webkit-appearance: none;
+  outline: none; 
+  transform: scale(0.6, 0.6);
   align-self: center;
+  cursor: pointer;
+  height: 6px;
+  margin: 12px 0 6px 0;
+}
+
+.pan::-webkit-slider-thumb {
+  transform: rotate(90deg);
+  -webkit-appearance:none;
+  appearance: none;
+  width:24px;
+  height: 6px;
+  background:  rgb(96, 170, 130);
   cursor: pointer;
 }
 
@@ -227,24 +264,23 @@ nav {
   
 }
 .vu-meter {
-  align-self: flex-start;
+  /* align-self: flex-end; */
   position: relative;
-  right: -20%;
-  top: -12%;
+  right: -130%;
+  /* top: -12%; */
   height: 96px;
   width: 14px;
   background-color: rgb(0, 189, 25);
   border-color: rgb(0, 0, 0);
   border-width: 2px;
   border-style: solid;
-  /* position: relative;
-  left: -40px; */
 }
 
 
 .mute-solo-btns {
   align-self: center;
   margin: 8px 0 4px 0;
+  outline: none; 
 }
 .mute-solo-btns > :hover {
   background-color: rgba(219, 0, 0, 0.753);
@@ -255,15 +291,32 @@ nav {
 .msr-btn{
   border-radius: 4px;
   cursor: pointer;
+  outline: none; 
+  height: 20px;
+  width: 24px;
+  padding-top: 2px;
+  /* margin: 1px; */
 }
 
 .btn {
   border-radius: 4px;
-  padding: 6px 3px 6px 3px;
   font-weight: 600;
   cursor: pointer;
+  outline: none; 
+  border-width: 0;
 }
 
+
+.master-btn{
+  height: 30px;
+  width: 60px;
+  margin: 4px 2px;
+}
+
+.master-btn:hover{
+  background-color: rgb(156, 40, 40);  
+  color: aliceblue;
+}
 
 .center {
   align-self: center;
@@ -283,11 +336,12 @@ nav {
 }
 
 .master-btns {
-  align-self: center;
+  align-self:center;
   margin: 20px;
   padding: 20px;
   box-shadow: 0px 0px 2px 4px rgba(136, 136, 136, 0.096);
-  background-color: rgba(3, 7, 24, 0.938);
+  background-color: rgba(10, 22, 20, 0.979);
+  outline: none; 
 }
 
 .space-between{
@@ -304,6 +358,8 @@ nav {
   padding: 16px 34px 16px 34px;
   color: aliceblue;
   box-shadow: 0 0 20px 4px rgba(211, 200, 201, 0.192);
+  outline: none; 
+
 }
 
 footer {
