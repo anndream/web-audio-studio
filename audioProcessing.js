@@ -2,26 +2,10 @@
 var playing = false;
 var audioElementsId = 'audio-1'
 var peakMetersId = 'peak-meter-1'
-var audioSource = './samples/theHunt.mp3'
+var audioSource = ['./samples/Storm.mp3']
 
-document.getElementById(audioElementsId
-    ).setAttribute('src',audioSource);
-document.getElementById(audioElementsId
-    ).setAttribute('type','audio/mpeg');
 
-var mainObjects = {audiosource:audioSource,
-                   audioList:''}
-
-                   
-// var wavesurfer = Object.create(WaveSurfer);
-// wavesurfer.init({
-//     container: document.querySelector('#wave-1'),
-//     waveColor: 'rgb(96, 170, 130)',
-//     progressColor: 'grey',
-//     cursorColor:'white',
-//     hideScrollbar: true,
-//     backend: 'MediaElement'
-// });
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 var wavesurfer = WaveSurfer.create({
     container: document.querySelector('#wave-1'),
@@ -34,16 +18,26 @@ var wavesurfer = WaveSurfer.create({
     height:100,
     backend: 'MediaElement'
 });
-
-
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-wavesurfer.load(document.getElementById(audioElementsId));
 wavesurfer.zoom(Number(0));
 
+document.getElementById(audioElementsId).setAttribute('type','audio/mpeg');
+
+var responsiveWave = wavesurfer.util.debounce(function() {
+    wavesurfer.empty();
+    wavesurfer.drawBuffer();
+  }, 20);
+  
+window.addEventListener('resize', responsiveWave);
 
 // functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function init(meterId, audioId, options, ctx) {
+
+function setAudioSource(elem,src){
+    document.getElementById(elem).setAttribute('src','./samples/'+src);
+    wavesurfer.load(document.getElementById(elem));
+    document.getElementById('track-id-1').innerHTML = src
+}
+
+function runVu(meterId, audioId, options, ctx) {
     var meterElement = document.getElementById(meterId);
     var audioElement = document.getElementById(audioId);
 
@@ -58,7 +52,7 @@ function init(meterId, audioId, options, ctx) {
 }
 
 function playAudio() {
-    var myAudio = document.getElementById(audioElementsId);
+    // var myAudio = document.getElementById(audioElementsId);
 
     if(!playing){
         audioCtx.resume(); 
@@ -95,17 +89,20 @@ function setPan(){
     var value = document.getElementById('pan-1').value;
 }
 
+document.getElementById("wave-1").onscroll = function() {zoom()};
 
+function zoom(){
+    wavesurfer.zoom(Number(0));
+}
 
-/// Data functions
-
+// Data functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getFiles(){
     var inp = document.getElementById("files");
     var files = []
 
     for (i = 0; i < inp.files.length; i++) {
         files[i] = inp.files[i];
-        console.log(files[i])
+        // console.log(files[i])
     }
 
     createTabe(inp.files);
@@ -132,15 +129,25 @@ function createTabe(data){
             var cellText = document.createTextNode(data[i].size);
           }
 
+          row.onclick = function(){return function(){
+                var track = this.cells[0].innerHTML;
+                setAudioSource('audio-1',track)
+          }}(row)
+
           cell.appendChild(cellText);
           row.appendChild(cell);
         }
         table.appendChild(row)
     }
+    setAudioSource('audio-1',data[0].name)
 }
 
+// function getTableData(elem){
+    
+    
+// }
 
-// Initialize
-init(peakMetersId, audioElementsId
+// Initialize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+runVu(peakMetersId, audioElementsId
 , { audioMeterStandard: 'true-peak' }, audioCtx);
 
