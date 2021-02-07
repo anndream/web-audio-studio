@@ -50,7 +50,7 @@
                             <th>Duration</th>
                         </tr>
                     </thead>
-                    <tbody id="tracks-list">
+                    <tbody id="tracks-list-id">
 
                     </tbody >
                     <!-- <tr>
@@ -61,48 +61,67 @@
                 </table>
                 <input type="file" id="files" name="Upload Track" multiple onchange="getFiles()">
                 <div class="master-btns">
-                    <button id="play-pause" type="button" class="master-btn btn" onclick="playAudio()"><i id="play-pause-i" class="fa fa-play"></i></button>
-                    <button id="stop" type="button" class="master-btn btn" onclick="stopAudio()"><i class="fa fa-stop"></i></button>
-                    <button id="rec" type="button" class="master-btn btn" onclick="recordAudio()"><i class="fa fa-circle"></i></button>
+                    <button id="play-pause-id" type="button" class="master-btn btn" onclick="playAudio()"><i id="play-pause-id-i" class="fa fa-play"></i></button>
+                    <button id="stop-id" type="button" class="master-btn btn" onclick="stopAudio()"><i class="fa fa-stop"></i></button>
+                    <button id="rec-id" type="button" class="master-btn btn" onclick="recordAudio()"><i class="fa fa-circle"></i></button>
                 </div>
             </div>
         </div>
         <div class="main-panel">
             <div class="editor-bar">Edit Panel</div>
-            <div class="track-container">
-               
-                <div class="wave-box" id="wave-1"></div>
+
+            <div class="track-container">              
+                <div class="wave-box" id="wave-id-1">
+                    <audio  id="audio-id-1" preload="metadata"></audio>    
+                </div>
                 <div class="controls-box">
-                    <h4 class="track-name" id="track-id-1">Track 1</h4>
-
-                    <input class="volume" id="volume-1" type="range" value="100" min="0" max="100" oninput="setVolume()">
-
-                    <div class="vu" id="peak-meter-1" ></div>
-
-                    <input class="pan" id="pan-1" type="range" min="-100" max="100"   oninput="setPan()">
-
+                    <h4 class="track-name" id="track-id-1" >Track 1</h4>
+                    <input class="volume" id="volume-id-1" type="range" value="100" min="0" max="100" oninput="setVolume(this)">
+                    <div class="vu" id="peak-meter-id-1" ></div>
+                    <input class="pan" id="pan-id-1" type="range" min="-100" max="100"   oninput="setPan(this)">
                     <datalist>
-                        <option value="-50" label="L"></option>
+                        <option value="-100" label="L"></option>
                         <option value="0" label="0"></option>
-                        <option value="50" label="R"></option>
+                        <option value="100" label="R"></option>
                     </datalist>
-
-                    <div class="mute-solo-btns">
+                    <div class="mute-solo-btns" id='msr-id-1'>
                         <button type="button" class="msr-btn btn">M</button>
                         <button type="button" class="msr-btn btn">S</button>
                         <button type="button" class="msr-btn btn"><i class="fa fa-circle "></i></button>
                     </div>
                 </div>
             </div>
-            <audio  id="audio-1" preload="metadata"></audio>    
-    
+
+            <div class="track-container">              
+                <div class="wave-box" id="wave-id-2">
+                    <audio  id="audio-id-2" preload="metadata"></audio>    
+                </div>
+                <div class="controls-box">
+                    <h4 class="track-name" id="track-id-2">Track 2</h4>
+                    <input class="volume" id="volume-id-2" type="range" value="100" min="0" max="100" oninput="setVolume(this)">
+                    <div class="vu" id="peak-meter-id-2" ></div>
+                    <input class="pan" id="pan-id-2" type="range" min="-100" max="100"   oninput="setPan(this)">
+                    <datalist>
+                        <option value="-100" label="L"></option>
+                        <option value="0" label="0"></option>
+                        <option value="100" label="R"></option>
+                    </datalist>
+                    <div class="mute-solo-btns" id='msr-id-2'>
+                        <button type="button" class="msr-btn btn">M</button>
+                        <button type="button" class="msr-btn btn">S</button>
+                        <button type="button" class="msr-btn btn"><i class="fa fa-circle "></i></button>
+                    </div>
+                </div>
+            </div>
+            
+
         </div>
     </div>
 
 <!-- 
     <div class="master-container">
         <div class="controls-box">
-            <h4 class="track-name" id="track-id-1">Master</h4>
+            <h4 class="track-name" id="track-id">Master</h4>
             <input class="slider" type="range" id="master-vol" >
             <div class="vu" id="my-peak-meter" ></div>
             <input class="pan" type="range" id="master-pan">            
