@@ -39,8 +39,8 @@ var wsParams = {
     cursorColor:'white',
     hideScrollbar: true,
     splitChannels:true,
-    maxCanvasWidth: 200,
-    height:100,
+    maxCanvasWidth: 180,
+    height:74,
     backend: 'MediaElement',
     responsive: true,
 }
@@ -88,7 +88,7 @@ wavesurfer[0].on('audioprocess', function() {
             remainingTime = totalTime - currentTime;
         
         // document.getElementById('time-id').innerText = totalTime.toFixed(1);
-        document.getElementById('time-id').innerText = 'Time: '+currentTime.toFixed(1);
+        timer(currentTime.toFixed(1));
     }
 });
 
@@ -130,6 +130,7 @@ function stopAudio() {
     document.getElementById('play-pause-id-i').className="fa fa-play";
     wavesurfer[0].stop();
     wavesurfer[1].stop();
+    timer(0);
 } 
 
 wavesurfer[0].on('finish', function(){
@@ -169,6 +170,17 @@ function soloTrack(elem){
 
 function recTrack(elem){
 
+}
+
+function timer(seconds){
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.round(seconds % 60);
+    const time = 'Time: ' + [
+        m > 9 ? m : '0' + m,
+        s > 9 ? s : '0' + s
+      ].filter(Boolean).join(':');
+
+      document.getElementById('time-id').innerText = time;
 }
 
 // Data functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -233,3 +245,28 @@ runVu(peakMetersId[0], audioElementsId[0], { audioMeterStandard: 'true-peak' }, 
 runVu(peakMetersId[1], audioElementsId[1], { audioMeterStandard: 'true-peak' }, audioCtx);
 
 
+/*
+
+- Escolher trilha de banco existente, ou trilha própria fazendo upload
+- Escolher amostra do narrador 
+- Gravar voz 
+- Sincronizar e mixar as faixas
+- Baixar áudio 
+
+- Sistema de pagamento
+- Sistema de login
+- Método para contatar o narrador
+
+Requerimentos técnicos:
+
+- Apresentar as trilhas em tabela com metadados
+- Apresentar amostras dos narradores em tabela com os dados
+- Filtrar trilhas e narradores por gênero
+- Mostrar o áudio em formato de onda em 2 pistas, sendo 1 para a trilha e outra para a locução
+- Sincronização das pistas
+- Mostradores e controles do áudio por pista (VU, voume, pan, mute, solo, rec)
+- Controle principal (play, pause, stop, rec, tempo)
+
+
+
+*/

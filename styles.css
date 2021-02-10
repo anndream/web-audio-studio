@@ -79,40 +79,6 @@ nav {
   justify-content: space-around;
 }
 
-.tracks-bar{
-  background-color: rgba(0, 0, 0, 0.932);
-  padding: 20px;
-  color: whitesmoke;
-  text-align: center;
-  flex: 1;
-}
-
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  background-color:  rgb(14, 14, 14);
-  color: aliceblue;
-}
-
-th{
-  text-align: left;
-  padding: 10px;
-}
-td {
-  border: 1px solid #0e0e0e00;
-  text-align: left;
-  padding: 6px;
-  cursor: pointer;
-}
-
-/* tr:hover {
-  background-color: #922121b2;
-} */
-
-tr:nth-child(even) {
-  background-color: #2b2b2b79;
-}
 
 .dropdown {
   position: relative;
@@ -161,6 +127,78 @@ tr:nth-child(even) {
 .dropdown:hover .dropbtn {
   background-color: #922121ce;
 }
+
+.tracks-bar{
+  background-color: rgba(0, 0, 0, 0.932);
+  padding: 20px;
+  color: whitesmoke;
+  text-align: center;
+  flex: 1;
+}
+
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color:  rgb(14, 14, 14);
+  color: aliceblue;
+}
+
+th{
+  text-align: left;
+  padding: 10px;
+}
+td {
+  border: 1px solid #0e0e0e00;
+  text-align: left;
+  padding: 6px;
+  cursor: pointer;
+}
+
+/* tr:hover {
+  background-color: #922121b2;
+} */
+
+tr:nth-child(even) {
+  background-color: #2b2b2b79;
+}
+
+.master-container {
+  background-color: rgba(17, 36, 33, 0.979);
+  border-color: rgb(0, 0, 0);
+  border-width: 6px 0 0 0;
+  border-style: solid;
+  padding: 12px;
+  /* margin: 20px 0 20px 0; */
+  /* height:auto; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.master-btns {
+  align-self:center;
+  margin: 20px;
+  padding: 20px 20px 10px 20px;
+  box-shadow: 0px 0px 2px 4px rgba(136, 136, 136, 0.096);
+  background-color: rgba(10, 22, 20, 0.979);
+  outline: none; 
+}
+
+.space-between{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.time{
+  color: aliceblue;
+  margin-top: 10px;
+}
+
+
+
 
 .main-panel{
   flex:2.7;
@@ -358,39 +396,6 @@ tr:nth-child(even) {
   align-self: center;
 }
 
-.master-container {
-  background-color: rgba(17, 36, 33, 0.979);
-  border-color: rgb(0, 0, 0);
-  border-width: 6px 0 0 0;
-  border-style: solid;
-  padding: 12px;
-  /* margin: 20px 0 20px 0; */
-  /* height:auto; */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.master-btns {
-  align-self:center;
-  margin: 20px;
-  padding: 20px;
-  box-shadow: 0px 0px 2px 4px rgba(136, 136, 136, 0.096);
-  background-color: rgba(10, 22, 20, 0.979);
-  outline: none; 
-}
-
-.space-between{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.time{
-  color: aliceblue;
-  margin-top: 10px;
-}
 
 
 .download-btn{
