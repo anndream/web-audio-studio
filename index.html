@@ -64,7 +64,9 @@
                     <button id="play-pause-id" type="button" class="master-btn btn" onclick="playAudio()"><i id="play-pause-id-i" class="fa fa-play"></i></button>
                     <button id="stop-id" type="button" class="master-btn btn" onclick="stopAudio()"><i class="fa fa-stop"></i></button>
                     <button id="rec-id" type="button" class="master-btn btn" onclick="recordAudio()"><i class="fa fa-circle"></i></button>
+                    <div class="time" id="time-id">Time:</div>
                 </div>
+                
             </div>
         </div>
         <div class="main-panel">
@@ -72,8 +74,9 @@
 
             <div class="track-container">              
                 <div class="wave-box" id="wave-id-1">
-                    <audio  id="audio-id-1" preload="metadata"></audio>    
-                </div>
+                    <audio  id="audio-id-1" preload="metadata"></audio> 
+                    <div class="timeline" id="timeline-id">Timeline</div>                  
+                </div> 
                 <div class="controls-box">
                     <h4 class="track-name" id="track-id-1" >Track 1</h4>
                     <input class="volume" id="volume-id-1" type="range" value="100" min="0" max="100" oninput="setVolume(this)">

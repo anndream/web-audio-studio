@@ -201,6 +201,14 @@ tr:nth-child(even) {
   /* align-self: center */
 }
 
+.timeline{
+  background-color: brown;
+  height: 20px;
+  width: 100%;
+  position:relative;
+  top:90%
+}
+
 .controls-box {
   display: flex;
   flex-direction: column;
@@ -218,12 +226,6 @@ tr:nth-child(even) {
   font-size: smaller;
 }
 
-
-/* wave */
-.wave-img {
-  height:180px;
-  width: 100%;
-}
 
 /* controls */
 .track-name {
@@ -384,6 +386,12 @@ tr:nth-child(even) {
   justify-content: space-between;
   height: 100%;
 }
+
+.time{
+  color: aliceblue;
+  margin-top: 10px;
+}
+
 
 .download-btn{
   margin: 30px;
