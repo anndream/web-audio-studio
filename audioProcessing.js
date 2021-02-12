@@ -5,6 +5,7 @@
 // classe track extend Vu, wave
 // função reset para vu e play
 
+
 var totalTracks = 2
 var isPlaying = false;
 var audioElementsId = ['audio-id-1','audio-id-2'];
@@ -16,70 +17,41 @@ var wavesurfer = [];
 var responsiveWave = [];
 var recEnable = [false,false];
 var loadOnTrack = 0;
-
+var timeLine = window.WaveSurfer.timeline
+var emptyAudioLenght = 30
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-document.getElementById(audioElementsId[0]).setAttribute('type','audio/mpeg');
-document.getElementById(audioElementsId[1]).setAttribute('type','audio/mpeg');
 
-// var plugins = WaveSurfer.timeline.create({
-//     showTime: true,
-//     opacity: 1,
-//     customShowTimeStyle: {
-//         // 'background-color': '#000',
-//         color: '#fff',
-//         padding: '2px',
-//         'font-size': '10px'
-//     }
-// })
 
 var wsParams = {
     container: document.querySelector('#wave-id-1'),
+    audioContext: audioCtx,
     waveColor: 'rgb(96, 170, 130)',
     progressColor: 'grey',
     cursorColor:'white',
     hideScrollbar: true,
-    splitChannels:true,
-    maxCanvasWidth: 180,
-    height:74,
+    splitChannels: true,
+    maxCanvasWidth: 200,
+    height:80,
     backend: 'MediaElement',
-    responsive: true,
+    responsive: 0.02,
+    plugins:[
+        timeLine.create({
+            container: '#timeline-id',
+            showTime: true,
+            opacity: 0,
+            // timeInterval: 2,
+            primaryColor: '#fff',
+            secondaryFontColor: '#fff'
+
+    })
+    ]
 }
 
 wavesurfer[0] = WaveSurfer.create(wsParams);
 wsParams.container=document.querySelector('#wave-id-2')
 wavesurfer[1] = WaveSurfer.create(wsParams);
 
-// wavesurfer[0].on('ready', function () {
-//     var timeline = Object.create(WaveSurfer.Timeline);
-
-//     timeline.init({
-//       wavesurfer: wavesurfer[0],
-//       container: '#timeline'
-//     });
-//   });
-
-///////
-// responsiveWave[0] = wavesurfer[0].util.debounce(function() {
-//     wavesurfer[0].empty();
-//     wavesurfer[0].drawBuffer();
-//     if(isPlaying){
-//         var currentProgress = wavesurfer[0].getCurrentTime()/ wavesurfer[0].getDuration();
-//         wavesurfer[0].seekTo(currentProgress); 
-//         console.log(wavesurfer[0].getCurrentTime())
-//     }
-// }, 20);
-  
-// responsiveWave[1] = wavesurfer[1].util.debounce(function() {
-//     wavesurfer[1].empty();
-//     wavesurfer[1].drawBuffer();
-// }, 20);
-
-// window.addEventListener('resize', responsiveWave[0]);
-// window.addEventListener('resize', responsiveWave[1]);
-///////////
-
-wavesurfer[0].zoom(Number(0));
-wavesurfer[1].zoom(Number(0));
+// Audio setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 wavesurfer[0].on('audioprocess', function() {
     if(wavesurfer[0].isPlaying()) {
@@ -92,26 +64,55 @@ wavesurfer[0].on('audioprocess', function() {
     }
 });
 
-
-// Audio functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 function setAudioSource(elem,src){
     var id = getIdNumber(elem)
     var track = 'track-id-'+id
     document.getElementById(elem).setAttribute('src','./samples/'+src);
     wavesurfer[id-1].load(document.getElementById(elem));
     document.getElementById(track).innerHTML = src
+    emptyAudioLenght = wavesurfer[id-1].getDuration()
 }
 
-function runVu(meterId, audioId, options, ctx) {
+function createEmptyTrack(duration,ctx){
+    var buffer = audioCtx.createBuffer(2, emptyAudioLenght*audioCtx.sampleRate, audioCtx.sampleRate);
+
+
+    for (var channel = 0; channel < buffer.numberOfChannels; channel++) {
+        // This gives us the actual ArrayBuffer that contains the data
+        var nowBuffering = buffer.getChannelData(channel);
+    
+        for (var i = 0; i < buffer.length; i++) {
+          // Math.random() is in [0; 1.0]
+          // audio needs to be in [-1.0; 1.0]
+          nowBuffering[i] = Math.random() * 2 - 1;
+        }
+    
+        buffer = nowBuffering;
+    }
+    
+
+    
+// var emptyTrack = audioCtx.createBufferSource();
+// emptyTrack.buffer = buffer;
+// wavesurfer[1].load(emptyTrack);
+
+}
+
+
+function initAudioElement(meterId, audioId, options, ctx) {
+    var id = getIdNumber(audioId) -1;
     var meterElement = document.getElementById(meterId);
     var audioElement = document.getElementById(audioId);
     var sourceNode = ctx.createMediaElementSource(audioElement);
     sourceNode.connect(ctx.destination);
     var meterNode = webAudioPeakMeter.createMeterNode(sourceNode, ctx);
     webAudioPeakMeter.createMeter(meterElement, meterNode, options);
+    document.getElementById(audioElementsId[id]).setAttribute('type','audio/mpeg');
+    wavesurfer[id].zoom(Number(0));
+    wavesurfer[id].setMute(false);
 }
 
+// Audio controls ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function playAudio() {
     if(!isPlaying){
         audioCtx.resume(); 
@@ -142,10 +143,10 @@ wavesurfer[1].on('finish', function(){
 });
 
 function setVolume(elem){
-    var id = getIdNumber(elem);
-    var value = document.getElementById(volumeId[id-1]).value;
+    var id = getIdNumber(elem) -1;
+    var value = document.getElementById(volumeId[id]).value;
     value = value/100;
-    wavesurfer[id-1].setVolume(value);
+    wavesurfer[id].setVolume(value);
 }
 
 function setPan(id){
@@ -160,12 +161,24 @@ function zoom(id){
 }
 
 function muteTrack(elem){
-    var id = getIdNumber(elem)
-    wavesurfer[id].toggleMute()
+    var id = getIdNumber(elem)-1;
+
+    if(wavesurfer[id].isPlaying()){
+        var mute = wavesurfer[id].getMute();
+        wavesurfer[id].setMute(!mute);
+    }
+
 }
 
 function soloTrack(elem){
+    // var id = getIdNumber(elem)-1;
+    // var mute = wavesurfer[id].getMute();
 
+    // for(var i=0; i<wavesurfer.length; i++){
+    //     if(i!=id){
+    //         wavesurfer[i].setMute(!mute);
+    //     }
+    // }
 }
 
 function recTrack(elem){
@@ -175,10 +188,9 @@ function recTrack(elem){
 function timer(seconds){
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.round(seconds % 60);
-    const time = 'Time: ' + [
-        m > 9 ? m : '0' + m,
-        s > 9 ? s : '0' + s
-      ].filter(Boolean).join(':');
+    const time = [m > 9 ? m : '0' + m,
+                             s > 9 ? s : '0' + s
+                            ].filter(Boolean).join(':');
 
       document.getElementById('time-id').innerText = time;
 }
@@ -241,8 +253,8 @@ function getIdNumber(elem){
 }
 
 // Initialize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-runVu(peakMetersId[0], audioElementsId[0], { audioMeterStandard: 'true-peak' }, audioCtx);
-runVu(peakMetersId[1], audioElementsId[1], { audioMeterStandard: 'true-peak' }, audioCtx);
+initAudioElement(peakMetersId[0], audioElementsId[0], { audioMeterStandard: 'true-peak' }, audioCtx);
+initAudioElement(peakMetersId[1], audioElementsId[1], { audioMeterStandard: 'true-peak' }, audioCtx);
 
 
 /*

@@ -234,17 +234,17 @@ tr:nth-child(even) {
   border-style: solid;
   box-shadow: 0px 0px 4px 2px rgba(136, 136, 136, 0.096);
   /* padding: 38px 8px 0 8px; */
-  padding-top: 4px;
+  padding-top: 2px;
   background-color: rgba(0, 0, 0, 0.945);
   /* align-self: center */
 }
 
 .timeline{
-  background-color: brown;
-  height: 20px;
+  /* background-color: rgb(138, 138, 138); */
+  /* height: 10px; */
   width: 100%;
   position:relative;
-  top:90%
+  top:90%;
 }
 
 .controls-box {
