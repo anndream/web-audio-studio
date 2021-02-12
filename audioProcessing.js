@@ -6,7 +6,9 @@
 // função reset para vu e play
 
 
-var totalTracks = 2
+var numOfTracks = 2
+var emptyAudioLenght = 30
+
 var isPlaying = false;
 var audioElementsId = ['audio-id-1','audio-id-2'];
 var peakMetersId = ['peak-meter-id-1','peak-meter-id-2'];
@@ -18,51 +20,107 @@ var responsiveWave = [];
 var recEnable = [false,false];
 var loadOnTrack = 0;
 var timeLine = window.WaveSurfer.timeline
-var emptyAudioLenght = 30
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 
-var wsParams = {
-    container: document.querySelector('#wave-id-1'),
-    audioContext: audioCtx,
-    waveColor: 'rgb(96, 170, 130)',
-    progressColor: 'grey',
-    cursorColor:'white',
-    hideScrollbar: true,
-    splitChannels: true,
-    maxCanvasWidth: 200,
-    height:80,
-    backend: 'MediaElement',
-    responsive: 0.02,
-    plugins:[
-        timeLine.create({
-            container: '#timeline-id',
-            showTime: true,
-            opacity: 0,
-            // timeInterval: 2,
-            primaryColor: '#fff',
-            secondaryFontColor: '#fff'
-
-    })
-    ]
-}
-
-wavesurfer[0] = WaveSurfer.create(wsParams);
-wsParams.container=document.querySelector('#wave-id-2')
-wavesurfer[1] = WaveSurfer.create(wsParams);
-
 // Audio setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+for(var i=0; i<numOfTracks;i++){
+    var waveId = '#wave-id-'+(i+1);
+    var timeLineId = '#timeline-id-'+(i+1);
+
+    var wsParams = {
+        container: document.querySelector(waveId),
+        audioContext: audioCtx,
+        waveColor: 'rgb(96, 170, 130)',
+        progressColor: 'grey',
+        cursorColor:'white',
+        hideScrollbar: true,
+        splitChannels: true,
+        maxCanvasWidth: 200,
+        height:80,
+        backend: 'MediaElement',
+        responsive: 0.02,
+        plugins:[
+            timeLine.create({
+                container: timeLineId,
+                showTime: true,
+                opacity: 0,
+                // timeInterval: 2,
+                secondaryColor :'#fff',
+                secondaryFontColor: '#fff'
+        })
+        ]
+    }
+    wavesurfer[i] = WaveSurfer.create(wsParams);
+}
 
 wavesurfer[0].on('audioprocess', function() {
     if(wavesurfer[0].isPlaying()) {
         var totalTime = wavesurfer[0].getDuration(),
             currentTime = wavesurfer[0].getCurrentTime(),
             remainingTime = totalTime - currentTime;
-        
         // document.getElementById('time-id').innerText = totalTime.toFixed(1);
         timer(currentTime.toFixed(1));
     }
 });
+
+
+function bufferToWave(abuffer, len) {
+    let numOfChan = abuffer.numberOfChannels,
+      length = len * numOfChan * 2 + 44,
+      buffer = new ArrayBuffer(length),
+      view = new DataView(buffer),
+      channels = [], i, sample,
+      offset = 0,
+      pos = 0;
+  
+    // write WAVE header
+    setUint32(0x46464952);
+    setUint32(length - 8);
+    setUint32(0x45564157);
+  
+    setUint32(0x20746d66);
+    setUint32(16);
+    setUint16(1);
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
+  
+    setUint32(0x61746164);
+    setUint32(length - pos - 4);
+  
+    // write interleaved data
+    for(i = 0; i < abuffer.numberOfChannels; i++)
+      channels.push(abuffer.getChannelData(i));
+  
+    while(pos < length) {
+      for(i = 0; i < numOfChan; i++) {             // interleave channels
+        sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
+        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; // scale to 16-bit signed int
+        view.setInt16(pos, sample, true);          // write 16-bit sample
+        pos += 2;
+      }
+      offset++                                     // next source sample
+    }
+  
+    console.log("criou audio vazio ")
+  
+    // create Blob
+    return  URL.createObjectURL(new Blob([buffer], {type: "audio/mp3"}));
+  
+    function setUint16(data) {
+      view.setUint16(pos, data, true);
+      pos += 2;
+    }
+  
+    function setUint32(data) {
+      view.setUint32(pos, data, true);
+      pos += 4;
+    }
+}
 
 function setAudioSource(elem,src){
     var id = getIdNumber(elem)
@@ -71,36 +129,17 @@ function setAudioSource(elem,src){
     wavesurfer[id-1].load(document.getElementById(elem));
     document.getElementById(track).innerHTML = src
     emptyAudioLenght = wavesurfer[id-1].getDuration()
+
+    // Verificar aqui << atualizar o tamanho do buffer com o tamanho da trilha carregada
+    // const length = emptyAudioLenght*audioCtx.sampleRate;
+    // const audioFile = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+    // const silentAudio = bufferToWave(audioFile, length);
+    // elem.src = silentAudio;
+    // wavesurfer[1].load(silentAudio);
 }
-
-function createEmptyTrack(duration,ctx){
-    var buffer = audioCtx.createBuffer(2, emptyAudioLenght*audioCtx.sampleRate, audioCtx.sampleRate);
-
-
-    for (var channel = 0; channel < buffer.numberOfChannels; channel++) {
-        // This gives us the actual ArrayBuffer that contains the data
-        var nowBuffering = buffer.getChannelData(channel);
-    
-        for (var i = 0; i < buffer.length; i++) {
-          // Math.random() is in [0; 1.0]
-          // audio needs to be in [-1.0; 1.0]
-          nowBuffering[i] = Math.random() * 2 - 1;
-        }
-    
-        buffer = nowBuffering;
-    }
-    
-
-    
-// var emptyTrack = audioCtx.createBufferSource();
-// emptyTrack.buffer = buffer;
-// wavesurfer[1].load(emptyTrack);
-
-}
-
 
 function initAudioElement(meterId, audioId, options, ctx) {
-    var id = getIdNumber(audioId) -1;
+    const id = getIdNumber(audioId) -1;
     var meterElement = document.getElementById(meterId);
     var audioElement = document.getElementById(audioId);
     var sourceNode = ctx.createMediaElementSource(audioElement);
@@ -108,8 +147,15 @@ function initAudioElement(meterId, audioId, options, ctx) {
     var meterNode = webAudioPeakMeter.createMeterNode(sourceNode, ctx);
     webAudioPeakMeter.createMeter(meterElement, meterNode, options);
     document.getElementById(audioElementsId[id]).setAttribute('type','audio/mpeg');
+
+    const length = emptyAudioLenght*ctx.sampleRate;
+    const audioFile = ctx.createBuffer(2, length, ctx.sampleRate);
+    const silentAudio = bufferToWave(audioFile, length);
+
+    audioElement.src = silentAudio;
     wavesurfer[id].zoom(Number(0));
     wavesurfer[id].setMute(false);
+    wavesurfer[id].load(audioElement);
 }
 
 // Audio controls ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,7 +189,7 @@ wavesurfer[1].on('finish', function(){
 });
 
 function setVolume(elem){
-    var id = getIdNumber(elem) -1;
+    var id = getIdNumber(elem)-1;
     var value = document.getElementById(volumeId[id]).value;
     value = value/100;
     wavesurfer[id].setVolume(value);
@@ -166,8 +212,12 @@ function muteTrack(elem){
     if(wavesurfer[id].isPlaying()){
         var mute = wavesurfer[id].getMute();
         wavesurfer[id].setMute(!mute);
+        if(mute){
+            document.getElementById('mute-id-'+(id+1)).className="msr-btn btn";
+        }else{
+            document.getElementById('mute-id-'+(id+1)).className="msr-btn mute-btn-sel btn";
+        }
     }
-
 }
 
 function soloTrack(elem){
@@ -189,8 +239,8 @@ function timer(seconds){
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.round(seconds % 60);
     const time = [m > 9 ? m : '0' + m,
-                             s > 9 ? s : '0' + s
-                            ].filter(Boolean).join(':');
+                    s > 9 ? s : '0' + s
+                ].filter(Boolean).join(':');
 
       document.getElementById('time-id').innerText = time;
 }

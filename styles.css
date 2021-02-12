@@ -371,6 +371,10 @@ tr:nth-child(even) {
   padding-top: 2px;
   /* margin: 1px; */
 }
+.mute-btn-sel{
+  background-color: blueviolet;
+  color: antiquewhite;
+}
 
 .btn {
   border-radius: 4px;
