@@ -49,7 +49,7 @@ for(var i=0; i<numOfTracks;i++){
                 // timeInterval: 2,
                 secondaryColor :'#fff',
                 secondaryFontColor: '#fff'
-        })
+            })
         ]
     }
     wavesurfer[i] = WaveSurfer.create(wsParams);
@@ -131,11 +131,12 @@ function setAudioSource(elem,src){
     emptyAudioLenght = wavesurfer[id-1].getDuration()
 
     // Verificar aqui << atualizar o tamanho do buffer com o tamanho da trilha carregada
-    // const length = emptyAudioLenght*audioCtx.sampleRate;
-    // const audioFile = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
-    // const silentAudio = bufferToWave(audioFile, length);
-    // elem.src = silentAudio;
-    // wavesurfer[1].load(silentAudio);
+    
+    const length = emptyAudioLenght*audioCtx.sampleRate;
+    const audioFile = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+    const silentAudio = bufferToWave(audioFile, length);
+    elem.src = silentAudio;
+    wavesurfer[1].load(silentAudio);
 }
 
 function initAudioElement(meterId, audioId, options, ctx) {
@@ -245,7 +246,7 @@ function timer(seconds){
       document.getElementById('time-id').innerText = time;
 }
 
-// Data functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// File functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getFiles(){
     var inp = document.getElementById("files");
     var files = []
