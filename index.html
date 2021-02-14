@@ -59,7 +59,9 @@
                         <td>30s</td>
                     </tr> -->
                 </table>
-                <input type="file" id="files" name="Upload Track" multiple onchange="getFiles()">
+
+                <input type="file" id="files" multiple hidden onchange="getFiles()">
+                <label for="files" class="btn download-btn center">Upload Files</label>
                 <div class="master-btns">
                     <button id="play-pause-id" type="button" class="master-btn btn" onclick="playAudio()"><i id="play-pause-id-i" class="fa fa-play"></i></button>
                     <button id="stop-id" type="button" class="master-btn btn" onclick="stopAudio()"><i class="fa fa-stop"></i></button>

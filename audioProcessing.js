@@ -8,6 +8,9 @@
 
 var numOfTracks = 2
 var emptyAudioLenght = 30
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var audioBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate, audioCtx.sampleRate);
+var timeLine = window.WaveSurfer.timeline
 
 var isPlaying = false;
 var audioElementsId = ['audio-id-1','audio-id-2'];
@@ -16,11 +19,9 @@ var wavesId = ['wave-id-1','wave-id-2'];
 var volumeId = ['volume-id-1','volume-id-2'];
 var panId = ['pan-id-1','pan-id-2'];
 var wavesurfer = [];
-var responsiveWave = [];
 var recEnable = [false,false];
 var loadOnTrack = 0;
-var timeLine = window.WaveSurfer.timeline
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var tracks = [];
 
 
 // Audio setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -39,6 +40,7 @@ for(var i=0; i<numOfTracks;i++){
         splitChannels: true,
         maxCanvasWidth: 200,
         height:80,
+        // barWidth: 0.8,
         backend: 'MediaElement',
         responsive: 0.02,
         plugins:[
@@ -53,18 +55,19 @@ for(var i=0; i<numOfTracks;i++){
         ]
     }
     wavesurfer[i] = WaveSurfer.create(wsParams);
-}
 
-wavesurfer[0].on('audioprocess', function() {
-    if(wavesurfer[0].isPlaying()) {
-        var totalTime = wavesurfer[0].getDuration(),
-            currentTime = wavesurfer[0].getCurrentTime(),
-            remainingTime = totalTime - currentTime;
-        // document.getElementById('time-id').innerText = totalTime.toFixed(1);
-        timer(currentTime.toFixed(1));
+    var trackObj = {
+        id: i,
+        name:'',
+        isPaused:false,
+        isSolo:false,
+        isRec:false,
+        audioLen:0,
+        currentTime:0,
+        wavesurfer:wavesurfer[i]
     }
-});
-
+    tracks[i]= trackObj;  // atualizar para utilizar objetos pela lista
+}
 
 function bufferToWave(abuffer, len) {
     let numOfChan = abuffer.numberOfChannels,
@@ -100,13 +103,13 @@ function bufferToWave(abuffer, len) {
       for(i = 0; i < numOfChan; i++) {             // interleave channels
         sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
         sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; // scale to 16-bit signed int
-        view.setInt16(pos, sample, true);          // write 16-bit sample
+        // view.setInt16(pos, sample, true);          // write 16-bit sample
         pos += 2;
       }
       offset++                                     // next source sample
     }
   
-    console.log("criou audio vazio ")
+    // console.log("criou audio vazio ")
   
     // create Blob
     return  URL.createObjectURL(new Blob([buffer], {type: "audio/mp3"}));
@@ -127,16 +130,7 @@ function setAudioSource(elem,src){
     var track = 'track-id-'+id
     document.getElementById(elem).setAttribute('src','./samples/'+src);
     wavesurfer[id-1].load(document.getElementById(elem));
-    document.getElementById(track).innerHTML = src
-    emptyAudioLenght = wavesurfer[id-1].getDuration()
-
-    // Verificar aqui << atualizar o tamanho do buffer com o tamanho da trilha carregada
-    
-    const length = emptyAudioLenght*audioCtx.sampleRate;
-    const audioFile = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
-    const silentAudio = bufferToWave(audioFile, length);
-    elem.src = silentAudio;
-    wavesurfer[1].load(silentAudio);
+    document.getElementById(track).innerHTML = src;
 }
 
 function initAudioElement(meterId, audioId, options, ctx) {
@@ -150,9 +144,7 @@ function initAudioElement(meterId, audioId, options, ctx) {
     document.getElementById(audioElementsId[id]).setAttribute('type','audio/mpeg');
 
     const length = emptyAudioLenght*ctx.sampleRate;
-    const audioFile = ctx.createBuffer(2, length, ctx.sampleRate);
-    const silentAudio = bufferToWave(audioFile, length);
-
+    const silentAudio = bufferToWave(audioBuffer, length);
     audioElement.src = silentAudio;
     wavesurfer[id].zoom(Number(0));
     wavesurfer[id].setMute(false);
@@ -181,13 +173,36 @@ function stopAudio() {
     timer(0);
 } 
 
+wavesurfer[0].on('audioprocess', function() {
+    if(wavesurfer[0].isPlaying()) {
+        var totalTime = wavesurfer[0].getDuration(),
+            currentTime = wavesurfer[0].getCurrentTime(),
+            remainingTime = totalTime - currentTime;
+        // document.getElementById('time-id').innerText = totalTime.toFixed(1);
+        timer(currentTime.toFixed(1));
+    }
+});
+
+wavesurfer[0].on('ready', function() {
+    console.log('ready');
+    emptyAudioLenght = wavesurfer[0].getDuration();
+    const length = audioCtx.sampleRate*emptyAudioLenght;
+    const silentAudio = bufferToWave(audioBuffer, length);
+    audioElementsId[1].src = silentAudio;
+    wavesurfer[1].load(silentAudio);
+});
+
+wavesurfer[1].on('ready', function() {
+    console.log(wavesurfer[0].getDuration(),wavesurfer[1].getDuration())
+});
+
 wavesurfer[0].on('finish', function(){
     stopAudio();
 });
 
-wavesurfer[1].on('finish', function(){
-    stopAudio();
-});
+// wavesurfer[1].on('finish', function(){
+//     stopAudio();
+// });
 
 function setVolume(elem){
     var id = getIdNumber(elem)-1;
@@ -230,10 +245,29 @@ function soloTrack(elem){
     //         wavesurfer[i].setMute(!mute);
     //     }
     // }
+
+    var id = getIdNumber(elem)-1;
+
+    if(wavesurfer[id].isPlaying()){
+        var mute = wavesurfer[id].getMute();
+        wavesurfer[id].setMute(!mute);
+        if(mute){
+            document.getElementById('solo-id-'+(id+1)).className="msr-btn btn";
+        }else{
+            document.getElementById('solo-id-'+(id+1)).className="msr-btn solo-btn-sel btn";
+        }
+    }
 }
 
 function recTrack(elem){
-
+    var id = getIdNumber(elem)-1;
+    var mute = wavesurfer[id].getMute();
+    wavesurfer[id].setMute(!mute);
+    if(mute){
+        document.getElementById('rec-id-'+(id+1)).className="msr-btn btn";
+    }else{
+        document.getElementById('rec-id-'+(id+1)).className="msr-btn rec-btn-sel btn";
+    }
 }
 
 function timer(seconds){
@@ -246,7 +280,7 @@ function timer(seconds){
       document.getElementById('time-id').innerText = time;
 }
 
-// File functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// F functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getFiles(){
     var inp = document.getElementById("files");
     var files = []
@@ -275,12 +309,13 @@ function createTabe(data){
             var cellText = document.createTextNode(data[i].size);
           }
           row.onclick = function(){return function(){
-                var track = this.cells[0].innerHTML;
-                setAudioSource(audioElementsId[loadOnTrack],track);
-                document.getElementById('play-pause-id-i').className="fa fa-play";
-                if(isPlaying){
-                    stopAudio();
-                }
+            if(isPlaying){
+                stopAudio();
+            }
+            var track = this.cells[0].innerHTML;
+            setAudioSource(audioElementsId[loadOnTrack],track);
+            document.getElementById('play-pause-id-i').className="fa fa-play";
+
           }}(row)
 
           cell.appendChild(cellText);
@@ -288,8 +323,12 @@ function createTabe(data){
         }
         table.appendChild(row)
     }
-    if(data.length>0)
-        setAudioSource(audioElementsId[0],data[0].name) 
+    if(isPlaying){
+        stopAudio();
+    }
+    if(data.length>0){
+        setAudioSource(audioElementsId[0],data[0].name);
+    }
 }
 
 function getIdNumber(elem){
@@ -306,7 +345,6 @@ function getIdNumber(elem){
 // Initialize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 initAudioElement(peakMetersId[0], audioElementsId[0], { audioMeterStandard: 'true-peak' }, audioCtx);
 initAudioElement(peakMetersId[1], audioElementsId[1], { audioMeterStandard: 'true-peak' }, audioCtx);
-
 
 /*
 

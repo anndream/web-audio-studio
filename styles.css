@@ -197,9 +197,6 @@ tr:nth-child(even) {
   margin-top: 10px;
 }
 
-
-
-
 .main-panel{
   flex:2.7;
   /* overflow-y: scroll; */
@@ -371,10 +368,22 @@ tr:nth-child(even) {
   padding-top: 2px;
   /* margin: 1px; */
 }
+
 .mute-btn-sel{
   background-color: blueviolet;
   color: antiquewhite;
 }
+
+.solo-btn-sel{
+  background-color: rgb(43, 128, 226);
+  color: antiquewhite;
+}
+
+.rec-btn-sel{
+  background-color: rgb(235, 0, 0);
+  color: antiquewhite;
+}
+
 
 .btn {
   border-radius: 4px;
