@@ -192,9 +192,6 @@ wavesurfer[0].on('ready', function() {
     wavesurfer[1].load(silentAudio);
 });
 
-wavesurfer[1].on('ready', function() {
-    console.log(wavesurfer[0].getDuration(),wavesurfer[1].getDuration())
-});
 
 wavesurfer[0].on('finish', function(){
     stopAudio();
